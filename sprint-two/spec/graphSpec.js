@@ -63,6 +63,7 @@ describe('graph', function() {
     graph.addNode(1);
     graph.addNode(3);
     graph.forEachNode(connectToFive);
+    debugger;
     expect(graph.hasEdge(2, 5)).to.equal(true);
     expect(graph.hasEdge(1, 5)).to.equal(true);
     expect(graph.hasEdge(3, 5)).to.equal(true);
