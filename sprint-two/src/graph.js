@@ -2,27 +2,32 @@
 
 // Instantiate a new graph
 var Graph = function() {
-  this.container = {};
+  this.nodes = {};
 };
 
 // Add a node to the graph, passing in the node's value.
 Graph.prototype.addNode = function(node) {
-  var temp = {};
-  temp.value = node;
-  temp.neighbors = [];
-  this.container[node] = temp;
-  //this.container[node].neighbors = neighbors;
+  this.nodes[node] = {};
+  // var temp = {};
+  // temp.value = node;
+  // temp.neighbors = [];
+  // this.container[node] = temp;
 };
 
-//[1] - [2]
+
 // Return a boolean value indicating if the value passed to contains is represented in the graph.
 Graph.prototype.contains = function(node) {
-  let graph = this.container;
-  if (graph[node].value === node) {
+  if (node in this.nodes) {
     return true;
   } else {
     return false;
   }
+  // let graph = this.container;
+  // if (graph[node].value === node) {
+  //   return true;
+  // } else {
+  //   return false;
+  //}
 
   // let output = false;
   // let visited = {};
@@ -50,20 +55,30 @@ Graph.prototype.contains = function(node) {
 
 // Removes a node from the graph.
 Graph.prototype.removeNode = function(node) {
-
-  let graph = this.container;
-  if (graph[node].value === node) {
-    graph[node].value = undefined;
-    graph[node].neighbors = [];
-  }
-  for (let key in graph) {
-    for (let i = 0; graph[key].neighbors.length; i++) {
-      if (graph[key].neighbors[i] === node) {
-        graph[key].neighbors.splice(i, 1);
+  if (node in this.nodes) {
+    let nodeToRemoveEdges = this.nodes[node];
+    if (Object.keys(nodeToRemoveEdges).length !== 0) {
+      for (let nodeEdges in nodeToRemoveEdges) {
+        delete this.nodes[nodeEdges][node];
       }
     }
+    delete this.nodes[node];
   }
-  return graph;
+  // let graph = this.container;
+  // if (graph[node].value === node) {
+  //   graph[node].value = undefined;
+  //   graph[node].neighbors = [];
+  // }
+  // for (let key in graph) {
+  //   for (let i = 0; graph[key].neighbors.length; i++) {
+  //     if (graph[key].neighbors[i] === node) {
+  //       graph[key].neighbors.splice(i, 1);
+  //     }
+  //   }
+  // }
+  // return graph;
+
+
   // let output = false;
   // let visited = {};
   // var search = function(graph) {
@@ -91,31 +106,42 @@ Graph.prototype.removeNode = function(node) {
 
 // Returns a boolean indicating whether two specified nodes are connected.  Pass in the values contained in each of the two nodes.
 Graph.prototype.hasEdge = function(fromNode, toNode) {
-  let graph = this.container;
-  if (graph[fromNode].value === fromNode) {
-    for (let i = 0; i < graph[fromNode].neighbors.length; i++) {
-      let neighbor = graph[fromNode].neighbors[i];
-      if (neighbor === toNode) {
-        return true;
-      }
+  if (fromNode in this.nodes && toNode in this.nodes) {
+    if (toNode in this.nodes[fromNode]) {
+      return true;
+    } else {
+      return false;
     }
-
+  } else {
     return false;
-
   }
-  if (graph[toNode].value === toNode) {
-    for (let i = 0; i < graph[toNode].neighbors.length; i++) {
-      let neighbor = graph[toNode].neighbors[i];
-      if (neighbor === fromNode) {
-        return true;
-      }
-    }
+  // let graph = this.container;
+  // if (graph[fromNode].value === fromNode) {
+  //   for (let i = 0; i < graph[fromNode].neighbors.length; i++) {
+  //     let neighbor = graph[fromNode].neighbors[i];
+  //     if (neighbor === toNode) {
+  //       return true;
+  //     }
+  //   }
 
-    return false;
+  //   return false;
 
-  }
+  // }
+  // if (graph[toNode].value === toNode) {
+  //   for (let i = 0; i < graph[toNode].neighbors.length; i++) {
+  //     let neighbor = graph[toNode].neighbors[i];
+  //     if (neighbor === fromNode) {
+  //       return true;
+  //     }
+  //   }
 
-  return false;
+  //   return false;
+
+  // }
+
+  // return false;
+
+
   // let output = false;
   // let visited = {};
   // var search = function(graph) {
@@ -149,13 +175,19 @@ Graph.prototype.hasEdge = function(fromNode, toNode) {
 //[1] - [2]
 // Connects two nodes in a graph by adding an edge between them.
 Graph.prototype.addEdge = function(fromNode, toNode) {
-  let graph = this.container;
-  if (graph[fromNode].value === Number(fromNode)) {
-    graph[fromNode].neighbors.push(toNode);
+  if (fromNode in this.nodes && toNode in this.nodes) {
+    this.nodes[fromNode][toNode] = true;
+    this.nodes[toNode][fromNode] = true;
   }
-  if (graph[toNode].value === Number(toNode)) {
-    graph[toNode].neighbors.push(fromNode);
-  }
+  // let graph = this.container;
+  // if (graph[fromNode].value === Number(fromNode)) {
+  //   graph[fromNode].neighbors.push(toNode);
+  // }
+  // if (graph[toNode].value === Number(toNode)) {
+  //   graph[toNode].neighbors.push(fromNode);
+  // }
+
+
   // let output = false;
   // let visited = {};
   // var search = function(graph, targetNode) {
@@ -185,25 +217,33 @@ Graph.prototype.addEdge = function(fromNode, toNode) {
 
 // Remove an edge between any two specified (by value) nodes.
 Graph.prototype.removeEdge = function(fromNode, toNode) {
-  let graph = this.container;
-  for (let i = 0; i < graph[fromNode].neighbors.length; i++) {
-    if (graph[fromNode].neighbors[i] === toNode) {
-      graph[fromNode].neighbors.splice(i, 1);
-    }
+
+  if (fromNode in this.nodes && toNode in this.nodes) {
+    delete this.nodes[fromNode][toNode];
+    delete this.nodes[toNode][fromNode];
   }
-  for (let i = 0; i < graph[toNode].neighbors.length; i++) {
-    if (graph[toNode].neighbors[i] === fromNode) {
-      graph[toNode].neighbors.splice(i, 1);
-    }
-  }
+  // let graph = this.container;
+  // for (let i = 0; i < graph[fromNode].neighbors.length; i++) {
+  //   if (graph[fromNode].neighbors[i] === toNode) {
+  //     graph[fromNode].neighbors.splice(i, 1);
+  //   }
+  // }
+  // for (let i = 0; i < graph[toNode].neighbors.length; i++) {
+  //   if (graph[toNode].neighbors[i] === fromNode) {
+  //     graph[toNode].neighbors.splice(i, 1);
+  //   }
+  // }
 };
 
 // Pass in a callback which will be executed on each node of the graph.
 Graph.prototype.forEachNode = function(cb) {
-  let graph = this.container;
-  for (let node in graph) {
+  for (let node in this.nodes) {
     cb(node);
   }
+  // let graph = this.container;
+  // for (let node in graph) {
+  //   cb(node);
+  // }
 
 };
 
